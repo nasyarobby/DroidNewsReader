@@ -19,11 +19,30 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Newsapiorg {
+    enum Country {
+        US("us");
+
+        String code;
+
+        Country(String code) {
+            this.code = code;
+        }
+
+        @Override
+        public String toString() {
+            return this.code;
+        }
+    }
 
     private String	apiKey;
     private String	keyword;
 
+    private String	TOP_HEADLINES_ENDPOINTS	= "https://newsapi.org/v2/top-headlines";
     private String	EVERYTHING_ENDPOINTS	= "https://newsapi.org/v2/everything";
+    Country country = Country.US;
+    int page = 1;
+    int totalResults = 0;
+    int pageSize = 5;
 
     public Newsapiorg(String apiKey) {
         this.apiKey = apiKey;
@@ -43,6 +62,7 @@ public class Newsapiorg {
         String status = (String) obj.get("status");
         List<ArticleInterface> list = null;
         if (status.equals("ok")) {
+            totalResults = (int) obj.get("totalResults");
             JSONArray articles = (JSONArray) obj.get("articles");
             list = new ArrayList<>(articles.size());
             for (int i = 0; i < articles.size(); i++) {
@@ -66,12 +86,17 @@ public class Newsapiorg {
 
     private String buildUrl() throws URISyntaxException {
         URI url;
-        url = new URI(EVERYTHING_ENDPOINTS);
 
-        if (keyword != null)
+        if (keyword != null) {
+            url = new URI(EVERYTHING_ENDPOINTS);
             url = HttpHelper.appendUri(url, "q=" + keyword);
+        } else {
+            url = new URI(TOP_HEADLINES_ENDPOINTS);
+            url = HttpHelper.appendUri(url, "country=" + country);
+        }
 
         url = HttpHelper.appendUri(url, "apiKey=" + apiKey);
+        url = HttpHelper.appendUri(url, "pageSize=" + pageSize);
 
         url = HttpHelper.appendUri(url, "language=en");
         return url.toString();
