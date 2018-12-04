@@ -14,7 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
+import com.nasyarobby.articlesource.ArticleSource;
+import com.nasyarobby.articlesource.newsapiorg.Newsapiorg;
+import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceByTopic;
 import com.nasyarobby.droidnewsreader.article.Article;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
 
@@ -25,6 +29,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    List<ArticleInterface> articleList = new ArrayList<>();
+    private ArticleAdapter  articlesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +63,23 @@ public class MainActivity extends AppCompatActivity
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         articleRecyclerView.setLayoutManager(layoutManager);
 
-        List<ArticleInterface> articleList = new ArrayList<>();
-        try {
+        /*try {
             articleList.add(new Article("Test", "test", null, new URL("http://www.google.com"), "test", "test", "test"));
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        }
-        ArticleAdapter articlesAdapter = new ArticleAdapter(articleList);
+        }*/
+
+        ArticleSource newsapi = new NewsapiorgSourceByTopic(new Newsapiorg("1dfd051041da4379987904e6b77c42d5"),
+                "Google+pixel");
+        articleList.addAll(newsapi.getArticles());
+
+        articlesAdapter = new ArticleAdapter(articleList);
         articleRecyclerView.setAdapter(articlesAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
