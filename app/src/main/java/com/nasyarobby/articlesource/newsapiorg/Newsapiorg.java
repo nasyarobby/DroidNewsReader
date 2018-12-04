@@ -41,7 +41,7 @@ public class Newsapiorg {
     private String	EVERYTHING_ENDPOINTS	= "https://newsapi.org/v2/everything";
     Country country = Country.US;
     int page = 1;
-    int totalResults = 0;
+    long totalResults;
     int pageSize = 5;
 
     public Newsapiorg(String apiKey) {
@@ -62,7 +62,7 @@ public class Newsapiorg {
         String status = (String) obj.get("status");
         List<ArticleInterface> list = null;
         if (status.equals("ok")) {
-            totalResults = (int) obj.get("totalResults");
+            totalResults = (long) obj.get("totalResults");
             JSONArray articles = (JSONArray) obj.get("articles");
             list = new ArrayList<>(articles.size());
             for (int i = 0; i < articles.size(); i++) {
@@ -79,6 +79,8 @@ public class Newsapiorg {
                 ArticleInterface article = new Article(title, description, publishedAt, url, content, sourceName, author);
                 list.add(article);
             }
+
+            page++;
         }
 
         return list;
@@ -97,9 +99,14 @@ public class Newsapiorg {
 
         url = HttpHelper.appendUri(url, "apiKey=" + apiKey);
         url = HttpHelper.appendUri(url, "pageSize=" + pageSize);
+        url = HttpHelper.appendUri(url, "page=" + page);
 
         url = HttpHelper.appendUri(url, "language=en");
         return url.toString();
+    }
+
+    public List<ArticleInterface> nextPage() {
+        return null;
     }
 
 }
