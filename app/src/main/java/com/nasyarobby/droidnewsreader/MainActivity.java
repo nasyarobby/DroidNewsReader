@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 
 import com.nasyarobby.articlesource.ArticleSource;
 import com.nasyarobby.articlesource.newsapiorg.Newsapiorg;
+import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceAllHeadlines;
 import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceByTopic;
 import com.nasyarobby.droidnewsreader.article.Article;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
@@ -69,8 +70,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }*/
 
-        ArticleSource newsapi = new NewsapiorgSourceByTopic(new Newsapiorg("1dfd051041da4379987904e6b77c42d5"),
-                "Google+pixel");
+        ArticleSource newsapi = new NewsapiorgSourceAllHeadlines(new Newsapiorg("1dfd051041da4379987904e6b77c42d5"));
         articleList.addAll(newsapi.getArticles());
 
         articlesAdapter = new ArticleAdapter(articleList);
