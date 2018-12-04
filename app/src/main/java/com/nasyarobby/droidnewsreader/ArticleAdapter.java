@@ -15,7 +15,7 @@ import java.util.List;
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
     private List<ArticleInterface> list;
 
-    public interface ShoppingListActionListener {
+    public interface ArticleListActionListener {
         void onClickItem(int position);
     }
 
@@ -35,8 +35,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         @Override
         public void onClick(View v) {
-            // TODO: Empty method
-            Log.d("ArticleAdapter: 31","clicked");
+            ArticleListActionListener mListener = (ArticleListActionListener) v.getContext();
+            mListener.onClickItem(getAdapterPosition());
         }
     }
 

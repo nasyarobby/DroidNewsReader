@@ -1,5 +1,6 @@
 package com.nasyarobby.droidnewsreader;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,7 +27,7 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ArticleAdapter.ArticleListActionListener {
 
     List<ArticleInterface> articleList = new ArrayList<>();
     private ArticleAdapter  articlesAdapter;
@@ -82,12 +83,6 @@ public class MainActivity extends AppCompatActivity
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         articleRecyclerView.setLayoutManager(layoutManager);
-
-        /*try {
-            articleList.add(new Article("Test", "test", null, new URL("http://www.google.com"), "test", "test", "test"));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }*/
 
         ArticleSource newsapi = new NewsapiorgSourceAllHeadlines(new Newsapiorg("1dfd051041da4379987904e6b77c42d5"));
         List<ArticleInterface> newArticles = newsapi.getArticles();
@@ -159,5 +154,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void openReadArticleActivity(int position) {
+        Intent intent = new Intent(this, ReadArticleActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onClickItem(int position) {
+        openReadArticleActivity(position);
     }
 }
