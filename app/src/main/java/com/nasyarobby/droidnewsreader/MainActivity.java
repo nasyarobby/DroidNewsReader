@@ -14,24 +14,44 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.nasyarobby.articlesource.ArticleSource;
 import com.nasyarobby.articlesource.newsapiorg.Newsapiorg;
-import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceByTopic;
-import com.nasyarobby.droidnewsreader.article.Article;
+import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceAllHeadlines;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     List<ArticleInterface> articleList = new ArrayList<>();
     private ArticleAdapter  articlesAdapter;
+
+    class ArticleOnScrollListener extends RecyclerView.OnScrollListener {
+        private static final String ARTICLES_LOADED_TEXT = "New articles loaded from the source.";
+        ArticleSource source;
+        List<ArticleInterface> list;
+        ArticleOnScrollListener(ArticleSource source) {
+            this.source = source;
+            this.list = list;
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            if (!recyclerView.canScrollVertically(1)) {
+                Toast.makeText(MainActivity.this, ARTICLES_LOADED_TEXT, LENGTH_SHORT).show();
+                List<ArticleInterface> newArticles = source.getArticles();
+                articlesAdapter.getList().addAll(source.getArticles());
+                articlesAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +89,14 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }*/
 
-        ArticleSource newsapi = new NewsapiorgSourceByTopic(new Newsapiorg("1dfd051041da4379987904e6b77c42d5"),
-                "Google+pixel");
-        articleList.addAll(newsapi.getArticles());
+        ArticleSource newsapi = new NewsapiorgSourceAllHeadlines(new Newsapiorg("1dfd051041da4379987904e6b77c42d5"));
+        List<ArticleInterface> newArticles = newsapi.getArticles();
+        articleList.addAll(newArticles);
 
         articlesAdapter = new ArticleAdapter(articleList);
         articleRecyclerView.setAdapter(articlesAdapter);
+
+        articleRecyclerView.addOnScrollListener(new ArticleOnScrollListener(newsapi));
     }
 
     @Override

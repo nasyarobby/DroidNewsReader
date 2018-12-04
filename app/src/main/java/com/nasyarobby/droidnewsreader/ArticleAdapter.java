@@ -44,6 +44,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         list = articles;
     }
 
+    public List<ArticleInterface> getList() {
+        return list;
+    }
+
 
     @NonNull
     @Override
