@@ -7,5 +7,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="newest_first">Newest First</string>
     <string name="oldest_first">Oldest First</string>
-    <string name="sort_by_source">Sort By Source</string>
+    <string name="sort_by_source_az">Sort by source (A-Z)</string>
+    <string name="sort_by_source_za">Sort by source (Z-A)</string>
 </resources>

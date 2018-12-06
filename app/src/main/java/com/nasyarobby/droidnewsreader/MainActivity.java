@@ -94,15 +94,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -184,24 +175,27 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        ArticlesSorter sorter = new ArticlesSorter(articleList);
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.newest_article_first) {
-            return true;
+            sorter.setSortingStrategy(new ArticlesSorter.NewestArticlesFirst());
+            Toast.makeText(this, "Newest articles first", Toast.LENGTH_SHORT).show();
         }
-        //noinspection SimplifiableIfStatement
         if (id == R.id.oldest_articles_first) {
-            return true;
+            sorter.setSortingStrategy(new ArticlesSorter.OldestArticleFirst());
+            Toast.makeText(this, "Oldest articles first", Toast.LENGTH_SHORT).show();
         }
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.sort_by_source) {
-            return true;
+        if (id == R.id.sort_by_source_az) {
+            sorter.setSortingStrategy(new ArticlesSorter.SortBySourceAtoZ());
+            Toast.makeText(this, "Sorted by source A to Z", Toast.LENGTH_SHORT).show();
         }
-
+        if (id == R.id.sort_by_source_za) {
+            sorter.setSortingStrategy(new ArticlesSorter.SortBySourceZtoA());
+            Toast.makeText(this, "Sorted by source Z to A", Toast.LENGTH_SHORT).show();
+        }
+        sorter.sort();
+        articlesAdapter.notifyDataSetChanged();
         return super.onOptionsItemSelected(item);
     }
 
