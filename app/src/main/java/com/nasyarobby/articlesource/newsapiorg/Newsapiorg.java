@@ -1,4 +1,7 @@
 package com.nasyarobby.articlesource.newsapiorg;
+
+import android.util.Log;
+
 import com.nasyarobby.droidnewsreader.HttpHelper;
 import com.nasyarobby.droidnewsreader.article.Article;
 import com.nasyarobby.droidnewsreader.article.ArticleImageDecorator;
@@ -35,12 +38,14 @@ public class Newsapiorg {
         }
     }
 
-    private String	apiKey;
-    private String	keyword;
+    private String apiKey;
+    private String keyword;
+    private Country country = Country.US;
+    private String source;
 
-    private String	TOP_HEADLINES_ENDPOINTS	= "https://newsapi.org/v2/top-headlines";
-    private String	EVERYTHING_ENDPOINTS	= "https://newsapi.org/v2/everything";
-    Country country = Country.US;
+    private String TOP_HEADLINES_ENDPOINTS = "https://newsapi.org/v2/top-headlines";
+    private String EVERYTHING_ENDPOINTS = "https://newsapi.org/v2/everything";
+
     int page = 1;
     long totalResults;
     int pageSize = 5;
@@ -54,9 +59,15 @@ public class Newsapiorg {
         return this;
     }
 
+    public Newsapiorg setSource(String source) {
+        this.source = source;
+        return this;
+    }
+
     public List<ArticleInterface> get() throws URISyntaxException, IOException, ParseException, java.text.ParseException {
         String finalURL = buildUrl();
         HttpHelper http = new HttpHelper();
+        Log.d("JsonReqUrl", finalURL);
         String json = http.get(finalURL);
         JSONParser parser = new JSONParser();
         JSONObject obj = (JSONObject) parser.parse(json);
@@ -89,16 +100,13 @@ public class Newsapiorg {
     }
 
     private String buildUrl() throws URISyntaxException {
-        URI url;
-
-        if (keyword != null) {
-            url = new URI(EVERYTHING_ENDPOINTS);
-            url = HttpHelper.appendUri(url, "q=" + keyword);
-        } else {
-            url = new URI(TOP_HEADLINES_ENDPOINTS);
+        URI url = new URI(TOP_HEADLINES_ENDPOINTS);
+        if (source == null) {
             url = HttpHelper.appendUri(url, "country=" + country);
         }
-
+        else {
+            url = HttpHelper.appendUri(url, "sources=" + source);
+        }
         url = HttpHelper.appendUri(url, "apiKey=" + apiKey);
         url = HttpHelper.appendUri(url, "pageSize=" + pageSize);
         url = HttpHelper.appendUri(url, "page=" + page);
@@ -107,8 +115,9 @@ public class Newsapiorg {
         return url.toString();
     }
 
-    public List<ArticleInterface> nextPage() {
-        return null;
+    public void reset() {
+        source = null;
+        page = 1;
     }
 
 }
