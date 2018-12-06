@@ -42,6 +42,7 @@ public class Newsapiorg {
     private String keyword;
     private Country country = Country.US;
     private String source;
+    private int endpoint = 0;
 
     private String TOP_HEADLINES_ENDPOINTS = "https://newsapi.org/v2/top-headlines";
     private String EVERYTHING_ENDPOINTS = "https://newsapi.org/v2/everything";
@@ -99,13 +100,27 @@ public class Newsapiorg {
         return list;
     }
 
+    public Newsapiorg useHeadlinesEndpoint() {
+        endpoint = 0;
+        return this;
+    }
+
+    public Newsapiorg useEverythingEndpoint() {
+        endpoint = 1;
+        return this;
+    }
+
     private String buildUrl() throws URISyntaxException {
-        URI url = new URI(TOP_HEADLINES_ENDPOINTS);
-        if (source == null) {
-            url = HttpHelper.appendUri(url, "country=" + country);
+        URI url = endpoint==0 ? new URI(TOP_HEADLINES_ENDPOINTS) : new URI(EVERYTHING_ENDPOINTS);
+        
+        if (source != null) {
+            url = HttpHelper.appendUri(url, "sources=" + source);
+        }
+        else if(keyword!= null) {
+            url = HttpHelper.appendUri(url, "q=" + keyword);
         }
         else {
-            url = HttpHelper.appendUri(url, "sources=" + source);
+            url = HttpHelper.appendUri(url, "country=" + country);
         }
         url = HttpHelper.appendUri(url, "apiKey=" + apiKey);
         url = HttpHelper.appendUri(url, "pageSize=" + pageSize);
@@ -116,6 +131,7 @@ public class Newsapiorg {
     }
 
     public void reset() {
+        keyword = null;
         source = null;
         page = 1;
     }
