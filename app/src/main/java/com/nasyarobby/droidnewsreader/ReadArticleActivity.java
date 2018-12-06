@@ -24,7 +24,8 @@ public class ReadArticleActivity extends AppCompatActivity {
 
         title.setText(article.getTitle());
         source.setText(article.getSource());
-        content.setText(article.getContent());
+        String modifiedContent = article.getContent().replaceAll("\\[\\+\\d{1,} chars\\]", "[read more]");
+        content.setText(modifiedContent);
 
         if(article.getImage() != null) {
             new DownloadImageTask(imageView).execute(article.getImage());
