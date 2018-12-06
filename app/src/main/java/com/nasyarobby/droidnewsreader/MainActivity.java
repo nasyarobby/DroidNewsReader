@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.nasyarobby.articlesource.ArticleSource;
 import com.nasyarobby.articlesource.newsapiorg.Newsapiorg;
 import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceAllHeadlines;
+import com.nasyarobby.droidnewsreader.article.Article;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
 
 import java.util.ArrayList;
@@ -30,13 +31,13 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ArticleAdapter.ArticleListActionListener {
 
-    List<ArticleInterface> articleList = new ArrayList<>();
+    public static List<ArticleInterface> articleList = new ArrayList<>();
     private ArticleAdapter articlesAdapter;
 
     class ArticleOnScrollListener extends RecyclerView.OnScrollListener {
         private static final String ARTICLES_LOADED_TEXT = "New articles loaded from the source.";
         ArticleSource source;
-        List<ArticleInterface> list;
+        public List<ArticleInterface> list;
 
         ArticleOnScrollListener(ArticleSource source) {
             this.source = source;
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity
 
     public void openReadArticleActivity(int position) {
         Intent intent = new Intent(this, ReadArticleActivity.class);
+        intent.putExtra("POSITION", position);
         startActivity(intent);
     }
 
