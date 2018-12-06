@@ -21,7 +21,7 @@ public class NewsapiorgSourceByTopic implements ArticleSource {
     public List<ArticleInterface> getArticles() {
         List<ArticleInterface> list = null;
         try {
-            list = this.source.setKeyword(topic).get();
+            list = this.source.useEverythingEndpoint().setKeyword(topic).get();
         } catch (URISyntaxException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
