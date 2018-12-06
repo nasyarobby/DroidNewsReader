@@ -21,6 +21,7 @@ import com.nasyarobby.articlesource.ArticleSource;
 import com.nasyarobby.articlesource.newsapiorg.Newsapiorg;
 import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceAllHeadlines;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +31,13 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ArticleAdapter.ArticleListActionListener {
 
     List<ArticleInterface> articleList = new ArrayList<>();
-    private ArticleAdapter  articlesAdapter;
+    private ArticleAdapter articlesAdapter;
 
     class ArticleOnScrollListener extends RecyclerView.OnScrollListener {
         private static final String ARTICLES_LOADED_TEXT = "New articles loaded from the source.";
         ArticleSource source;
         List<ArticleInterface> list;
+
         ArticleOnScrollListener(ArticleSource source) {
             this.source = source;
             this.list = list;
@@ -48,8 +50,10 @@ public class MainActivity extends AppCompatActivity
             if (!recyclerView.canScrollVertically(1)) {
                 Toast.makeText(MainActivity.this, ARTICLES_LOADED_TEXT, LENGTH_SHORT).show();
                 List<ArticleInterface> newArticles = source.getArticles();
-                articlesAdapter.getList().addAll(source.getArticles());
-                articlesAdapter.notifyDataSetChanged();
+                if (newArticles.size() > 0) {
+                    articlesAdapter.getList().addAll(source.getArticles());
+                    articlesAdapter.notifyDataSetChanged();
+                }
             }
         }
     }
