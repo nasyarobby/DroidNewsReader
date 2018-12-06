@@ -10,14 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nasyarobby.droidnewsreader.article.AndroidArticleDecorator;
-import com.nasyarobby.droidnewsreader.article.ArticleInterface;
-
-import org.w3c.dom.Text;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
@@ -66,7 +60,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        AndroidArticleDecorator article = (AndroidArticleDecorator) MainActivity.articleList.get(position);
+        AndroidArticleWrapper article = (AndroidArticleWrapper) MainActivity.articleList.get(position);
         holder.title.setText(article.getTitle());
 
         if (article.isRead())

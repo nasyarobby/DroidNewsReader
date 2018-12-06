@@ -1,17 +1,19 @@
-package com.nasyarobby.droidnewsreader.article;
+package com.nasyarobby.droidnewsreader;
 
 import android.graphics.Bitmap;
+
+import com.nasyarobby.droidnewsreader.article.ArticleInterface;
 
 import java.net.URL;
 import java.util.Date;
 
-public class AndroidArticleDecorator implements ArticleInterface {
+public class AndroidArticleWrapper implements ArticleInterface {
     private ArticleInterface article;
     private String imageUrl;
     private boolean read;
     private Bitmap bitmap;
 
-    public AndroidArticleDecorator(ArticleInterface article, String imageUrl) {
+    public AndroidArticleWrapper(ArticleInterface article, String imageUrl) {
         this.article = article;
         this.imageUrl = imageUrl;
 

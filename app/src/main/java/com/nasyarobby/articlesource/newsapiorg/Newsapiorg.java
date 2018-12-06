@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.nasyarobby.droidnewsreader.HttpHelper;
 import com.nasyarobby.droidnewsreader.article.Article;
-import com.nasyarobby.droidnewsreader.article.AndroidArticleDecorator;
+import com.nasyarobby.droidnewsreader.AndroidArticleWrapper;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
 
 import java.io.IOException;
@@ -90,7 +90,7 @@ public class Newsapiorg {
                 String sourceName = (String) sourceObj.get("name");
                 String author = (String) articleObj.get("author");
                 ArticleInterface article = new Article(title, description, publishedAt, url, content, sourceName, author);
-                article = new AndroidArticleDecorator(article, (String) articleObj.get("urlToImage"));
+                article = new AndroidArticleWrapper(article, (String) articleObj.get("urlToImage"));
                 list.add(article);
             }
 

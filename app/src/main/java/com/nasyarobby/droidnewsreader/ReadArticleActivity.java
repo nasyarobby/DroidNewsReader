@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nasyarobby.droidnewsreader.article.AndroidArticleDecorator;
-
 public class ReadArticleActivity extends AppCompatActivity {
 
     @Override
@@ -14,7 +12,7 @@ public class ReadArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         int position = extras.getInt("POSITION");
-        AndroidArticleDecorator article = (AndroidArticleDecorator) MainActivity.articleList.get(position);
+        AndroidArticleWrapper article = (AndroidArticleWrapper) MainActivity.articleList.get(position);
         article.setRead();
         setContentView(R.layout.activity_read_article);
         TextView title = findViewById(R.id.read_article_title);
