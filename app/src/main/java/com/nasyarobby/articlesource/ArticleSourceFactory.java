@@ -33,6 +33,10 @@ public class ArticleSourceFactory {
         return source;
     }
 
+    public Newsapiorg getNewsapi() {
+        return newsapi;
+    }
+
     public List<String> getSourceNames() {
         return sources;
     }
