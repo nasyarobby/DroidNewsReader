@@ -13,10 +13,16 @@ import android.widget.TextView;
 import com.nasyarobby.droidnewsreader.article.AndroidArticleDecorator;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
 
+import org.w3c.dom.Text;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
     private Context context;
+
     public interface ArticleListActionListener {
         void onClickItem(int position);
     }
@@ -25,6 +31,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         TextView title;
         TextView excerpt;
         TextView source;
+        TextView publishedAt;
         ImageView image;
 
         public ViewHolder(View v) {
@@ -32,6 +39,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             title = v.findViewById(R.id.article_title_text_view);
             excerpt = v.findViewById(R.id.article_excerpt_text_view);
             source = v.findViewById(R.id.source_text_view);
+            publishedAt = v.findViewById((R.id.published_at_text_view));
             image = v.findViewById(R.id.article_image_view);
 
             v.setOnClickListener(this);
@@ -61,16 +69,33 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         AndroidArticleDecorator article = (AndroidArticleDecorator) MainActivity.articleList.get(position);
         holder.title.setText(article.getTitle());
 
-        if(article.isRead())
+        if (article.isRead())
             holder.title.setTextColor(ContextCompat.getColor(context, R.color.colorRead));
         else
             holder.title.setTextColor(ContextCompat.getColor(context, R.color.colorUnread));
 
         holder.excerpt.setText(article.getDescription());
         holder.source.setText(article.getSource());
+        DateFormat df = new SimpleDateFormat("MM/dd KK:mma");
+        holder.publishedAt.setText(df.format(article.getPublishedAt()));
         String imageUrl = article.getImage();
-        if(imageUrl != null)
-            new DownloadImageTask(holder.image).execute(imageUrl);
+        if (article.getBitmap() == null) {
+            DownloadImageTask task = null;
+            if (imageUrl != null) {
+                task = new DownloadImageTask(holder.image);
+                task.execute(article.getImage());
+                try {
+                    article.setBitmap(task.get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            holder.image.setImageBitmap(article.getBitmap());
+        }
+
     }
 
     @Override
