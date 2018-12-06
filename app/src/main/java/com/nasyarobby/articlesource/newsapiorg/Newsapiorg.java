@@ -49,7 +49,7 @@ public class Newsapiorg {
 
     int page = 1;
     long totalResults;
-    int pageSize = 5;
+    int pageSize = 20;
 
     public Newsapiorg(String apiKey) {
         this.apiKey = apiKey;
