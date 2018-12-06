@@ -2,6 +2,7 @@ package com.nasyarobby.articlesource;
 
 import com.nasyarobby.articlesource.newsapiorg.Newsapiorg;
 import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceAllHeadlines;
+import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceByTopic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,5 +40,9 @@ public class ArticleSourceFactory {
 
     public List<String> getSourceNames() {
         return sources;
+    }
+
+    public ArticleSource getTopicSource(String topic) {
+        return new NewsapiorgSourceByTopic(newsapi, topic);
     }
 }
