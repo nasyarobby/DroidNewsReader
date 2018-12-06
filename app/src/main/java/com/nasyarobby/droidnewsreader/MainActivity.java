@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,9 +19,6 @@ import android.widget.Toast;
 
 import com.nasyarobby.articlesource.ArticleSource;
 import com.nasyarobby.articlesource.ArticleSourceFactory;
-import com.nasyarobby.articlesource.newsapiorg.Newsapiorg;
-import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceAllHeadlines;
-import com.nasyarobby.droidnewsreader.article.Article;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
 
 import java.util.ArrayList;
@@ -100,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         Menu topicMenu = menu.addSubMenu("Topics");
-        for(int i = 0; i < topics.size(); i++) {
+        for (int i = 0; i < topics.size(); i++) {
             topicMenu.add(1, i, i, topics.get(i));
         }
 
@@ -174,13 +170,23 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        String sourceName = factory.getSourceNames().get(id);
-        ArticleSource source = factory.getSource(sourceName);
-        if (source != null) {
-            Toast.makeText(this, sourceName, Toast.LENGTH_SHORT).show();
+        int groupId = item.getGroupId();
+
+        if (groupId == 0) {
+            String sourceName = factory.getSourceNames().get(id);
+            ArticleSource source = factory.getSource(sourceName);
+            if (source != null) {
+                Toast.makeText(this, sourceName, Toast.LENGTH_SHORT).show();
+                loadArticleSource(source);
+            } else
+                Toast.makeText(this, "Source not found", Toast.LENGTH_SHORT).show();
+        } else {
+            String topic = topics.get(id);
+            factory.getNewsapi().reset();
+            ArticleSource source = factory.getTopicSource(topic);
+            Toast.makeText(this, "Topic: " + topic, Toast.LENGTH_SHORT).show();
             loadArticleSource(source);
-        } else
-            Toast.makeText(this, "Source not found", Toast.LENGTH_SHORT).show();
+        }
 
         // CLOSE THE DRAWER
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
