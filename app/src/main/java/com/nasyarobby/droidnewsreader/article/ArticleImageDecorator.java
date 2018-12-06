@@ -34,17 +34,17 @@ public class ArticleImageDecorator implements ArticleInterface {
 
     @Override
     public String getContent() {
-        return getContent();
+        return article.getContent();
     }
 
     @Override
     public String getSource() {
-        return getSource();
+        return article.getSource();
     }
 
     @Override
     public String getAuthor() {
-        return getAuthor();
+        return article.getAuthor();
     }
 
     public String getImage() {
