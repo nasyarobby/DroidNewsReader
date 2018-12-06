@@ -16,4 +16,6 @@ public interface ArticleSource {
      * @return List of Article
      */
     List<ArticleInterface> getArticles();
+
+    String getName();
 }
