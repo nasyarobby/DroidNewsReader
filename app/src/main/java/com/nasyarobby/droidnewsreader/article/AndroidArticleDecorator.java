@@ -1,5 +1,7 @@
 package com.nasyarobby.droidnewsreader.article;
 
+import android.graphics.Bitmap;
+
 import java.net.URL;
 import java.util.Date;
 
@@ -7,10 +9,12 @@ public class AndroidArticleDecorator implements ArticleInterface {
     private ArticleInterface article;
     private String imageUrl;
     private boolean read;
+    private Bitmap bitmap;
 
     public AndroidArticleDecorator(ArticleInterface article, String imageUrl) {
         this.article = article;
         this.imageUrl = imageUrl;
+
         this.read = false;
     }
 
@@ -52,6 +56,10 @@ public class AndroidArticleDecorator implements ArticleInterface {
     public String getImage() {
         return imageUrl;
     }
+
+    public Bitmap getBitmap() { return bitmap;}
+
+    public void setBitmap(Bitmap bmp) { bitmap = bmp;}
 
     public boolean isRead() {
         return read;
