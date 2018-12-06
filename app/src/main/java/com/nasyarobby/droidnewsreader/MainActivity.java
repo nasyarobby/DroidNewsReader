@@ -36,9 +36,13 @@ public class MainActivity extends AppCompatActivity
     public static List<ArticleInterface> articleList = new ArrayList<>();
     private ArticleAdapter articlesAdapter;
     ArticleSourceFactory factory;
+    List<String> topics;
 
     public MainActivity() {
         factory = new ArticleSourceFactory();
+        topics = new ArrayList<>();
+        topics.add("Design Patterns");
+        topics.add("Web Development");
     }
 
     class ArticleOnScrollListener extends RecyclerView.OnScrollListener {
@@ -90,9 +94,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
-
+        Menu headlinesMenu = menu.addSubMenu("Headlines");
         for (int i = 0; i < factory.getSourceNames().size(); i++) {
-            menu.add(0, i, i, factory.getSourceNames().get(i));
+            headlinesMenu.add(0, i, i, factory.getSourceNames().get(i));
+        }
+
+        Menu topicMenu = menu.addSubMenu("Topics");
+        for(int i = 0; i < topics.size(); i++) {
+            topicMenu.add(1, i, i, topics.get(i));
         }
 
         navigationView.setNavigationItemSelectedListener(this);
