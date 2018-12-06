@@ -1,5 +1,8 @@
 package com.nasyarobby.droidnewsreader;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.nasyarobby.articlesource.ArticleSource;
@@ -27,18 +31,35 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ArticleAdapter.ArticleListActionListener {
+        implements
+            NavigationView.OnNavigationItemSelectedListener,
+            ArticleAdapter.ArticleListActionListener,
+            AddTopicDialogFragment.AddTopicDialogListener {
 
     public static List<ArticleInterface> articleList = new ArrayList<>();
     private ArticleAdapter articlesAdapter;
     ArticleSourceFactory factory;
     List<String> topics;
+    private Menu topicMenu;
 
     public MainActivity() {
         factory = new ArticleSourceFactory();
         topics = new ArrayList<>();
         topics.add("Design Patterns");
         topics.add("Web Development");
+    }
+
+    @Override
+    public void onClickAddTopicButton(DialogFragment dialog) {
+        EditText topicEditText = dialog.getDialog().findViewById(R.id.topic_edit_text);
+        String topic = topicEditText.getText().toString().trim();
+        topics.add(topic);
+        factory.getNewsapi().reset();
+        ArticleSource source = factory.getTopicSource(topic);
+        Toast.makeText(this, "Topic: " + topic, Toast.LENGTH_SHORT).show();
+        loadArticleSource(source);
+        dialog.dismiss();
+        buildTopicsMenu();
     }
 
     class ArticleOnScrollListener extends RecyclerView.OnScrollListener {
@@ -94,11 +115,8 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0; i < factory.getSourceNames().size(); i++) {
             headlinesMenu.add(0, i, i, factory.getSourceNames().get(i));
         }
-
-        Menu topicMenu = menu.addSubMenu("Topics");
-        for (int i = 0; i < topics.size(); i++) {
-            topicMenu.add(1, i, i, topics.get(i));
-        }
+        topicMenu = menu.addSubMenu("Topics");
+        buildTopicsMenu();
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -112,6 +130,19 @@ public class MainActivity extends AppCompatActivity
         articleRecyclerView.setAdapter(articlesAdapter);
         loadArticleSource(newsapi);
         articleRecyclerView.addOnScrollListener(new ArticleOnScrollListener(newsapi));
+    }
+
+    private void buildTopicsMenu() {
+        topicMenu.clear();
+        for (int i = 0; i < topics.size(); i++) {
+            topicMenu.add(1, i, i, topics.get(i));
+        }
+        topicMenu.add(1, topics.size(), topics.size(), "Add Topic");
+    }
+
+    public void openAddTopicFragmentDialog() {
+        DialogFragment dialog = new AddTopicDialogFragment();
+        dialog.show(getFragmentManager(), "topicDialog");
     }
 
     protected void loadArticleSource(ArticleSource source) {
@@ -181,11 +212,15 @@ public class MainActivity extends AppCompatActivity
             } else
                 Toast.makeText(this, "Source not found", Toast.LENGTH_SHORT).show();
         } else {
-            String topic = topics.get(id);
-            factory.getNewsapi().reset();
-            ArticleSource source = factory.getTopicSource(topic);
-            Toast.makeText(this, "Topic: " + topic, Toast.LENGTH_SHORT).show();
-            loadArticleSource(source);
+            if (id == topics.size()) {
+                openAddTopicFragmentDialog();
+            } else {
+                String topic = topics.get(id);
+                factory.getNewsapi().reset();
+                ArticleSource source = factory.getTopicSource(topic);
+                Toast.makeText(this, "Topic: " + topic, Toast.LENGTH_SHORT).show();
+                loadArticleSource(source);
+            }
         }
 
         // CLOSE THE DRAWER
