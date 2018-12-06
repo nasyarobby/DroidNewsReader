@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.nasyarobby.articlesource.ArticleSource;
+import com.nasyarobby.articlesource.ArticleSourceFactory;
 import com.nasyarobby.articlesource.newsapiorg.Newsapiorg;
 import com.nasyarobby.articlesource.newsapiorg.NewsapiorgSourceAllHeadlines;
 import com.nasyarobby.droidnewsreader.article.Article;
@@ -33,6 +35,11 @@ public class MainActivity extends AppCompatActivity
 
     public static List<ArticleInterface> articleList = new ArrayList<>();
     private ArticleAdapter articlesAdapter;
+    ArticleSourceFactory factory;
+
+    public MainActivity() {
+        factory = new ArticleSourceFactory();
+    }
 
     class ArticleOnScrollListener extends RecyclerView.OnScrollListener {
         private static final String ARTICLES_LOADED_TEXT = "New articles loaded from the source.";
@@ -82,6 +89,12 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+
+        for (int i = 0; i < factory.getSourceNames().size(); i++) {
+            menu.add(0, i, i, factory.getSourceNames().get(i));
+        }
+
         navigationView.setNavigationItemSelectedListener(this);
 
         RecyclerView articleRecyclerView = (RecyclerView) findViewById(R.id.articles_recyler_view);
@@ -89,14 +102,25 @@ public class MainActivity extends AppCompatActivity
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         articleRecyclerView.setLayoutManager(layoutManager);
 
-        ArticleSource newsapi = new NewsapiorgSourceAllHeadlines(new Newsapiorg("1dfd051041da4379987904e6b77c42d5"));
-        List<ArticleInterface> newArticles = newsapi.getArticles();
-        articleList.addAll(newArticles);
-
         articlesAdapter = new ArticleAdapter(articleList);
+        ArticleSource newsapi = factory.getSource("All Headlines");
         articleRecyclerView.setAdapter(articlesAdapter);
-
+        loadArticleSource(newsapi);
         articleRecyclerView.addOnScrollListener(new ArticleOnScrollListener(newsapi));
+    }
+
+    protected void loadArticleSource(ArticleSource source) {
+        List<ArticleInterface> newArticles = source.getArticles();
+
+        if (newArticles != null && newArticles.size() > 0) {
+            articleList.clear();
+            articleList.addAll(newArticles);
+            articlesAdapter.notifyDataSetChanged();
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar.setTitle(source.getName());
+        } else {
+            Toast.makeText(this, "No new articles found.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -141,21 +165,15 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        String sourceName = factory.getSourceNames().get(id);
+        ArticleSource source = factory.getSource(sourceName);
+        if (source != null) {
+            Toast.makeText(this, sourceName, Toast.LENGTH_SHORT).show();
+            loadArticleSource(source);
+        } else
+            Toast.makeText(this, "Source not found", Toast.LENGTH_SHORT).show();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
+        // CLOSE THE DRAWER
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
