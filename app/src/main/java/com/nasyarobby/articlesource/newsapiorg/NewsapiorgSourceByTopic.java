@@ -38,4 +38,9 @@ public class NewsapiorgSourceByTopic implements ArticleSource {
         return list;
     }
 
+    @Override
+    public String getName() {
+        return topic;
+    }
+
 }

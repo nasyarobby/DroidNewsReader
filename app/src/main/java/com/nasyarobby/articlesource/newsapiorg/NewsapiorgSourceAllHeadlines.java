@@ -10,6 +10,7 @@ import java.util.List;
 
 public class NewsapiorgSourceAllHeadlines implements ArticleSource {
     private Newsapiorg	source;
+    private static String SOURCE_NAME = "All Headlines";
 
     public NewsapiorgSourceAllHeadlines(Newsapiorg source) {
         this.source = source;
@@ -34,6 +35,11 @@ public class NewsapiorgSourceAllHeadlines implements ArticleSource {
         }
 
         return list;
+    }
+
+    @Override
+    public String getName() {
+        return SOURCE_NAME;
     }
 
 }
