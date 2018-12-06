@@ -1,6 +1,7 @@
 package com.nasyarobby.articlesource.newsapiorg;
 import com.nasyarobby.droidnewsreader.HttpHelper;
 import com.nasyarobby.droidnewsreader.article.Article;
+import com.nasyarobby.droidnewsreader.article.ArticleImageDecorator;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
 
 import java.io.IOException;
@@ -77,6 +78,7 @@ public class Newsapiorg {
                 String sourceName = (String) sourceObj.get("name");
                 String author = (String) articleObj.get("author");
                 ArticleInterface article = new Article(title, description, publishedAt, url, content, sourceName, author);
+                article = new ArticleImageDecorator(article, (String) articleObj.get("urlToImage"));
                 list.add(article);
             }
 
