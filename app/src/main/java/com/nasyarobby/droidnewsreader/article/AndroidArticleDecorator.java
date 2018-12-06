@@ -3,13 +3,15 @@ package com.nasyarobby.droidnewsreader.article;
 import java.net.URL;
 import java.util.Date;
 
-public class ArticleImageDecorator implements ArticleInterface {
+public class AndroidArticleDecorator implements ArticleInterface {
     private ArticleInterface article;
     private String imageUrl;
+    private boolean read;
 
-    public ArticleImageDecorator(ArticleInterface article, String imageUrl) {
+    public AndroidArticleDecorator(ArticleInterface article, String imageUrl) {
         this.article = article;
         this.imageUrl = imageUrl;
+        this.read = false;
     }
 
     @Override
@@ -49,5 +51,13 @@ public class ArticleImageDecorator implements ArticleInterface {
 
     public String getImage() {
         return imageUrl;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead() {
+        read = true;
     }
 }

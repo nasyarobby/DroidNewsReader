@@ -1,6 +1,8 @@
 package com.nasyarobby.droidnewsreader;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nasyarobby.droidnewsreader.article.ArticleImageDecorator;
+import com.nasyarobby.droidnewsreader.article.AndroidArticleDecorator;
 import com.nasyarobby.droidnewsreader.article.ArticleInterface;
 
 import java.util.List;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
-    private List<ArticleInterface> list;
-
+    private Context context;
     public interface ArticleListActionListener {
         void onClickItem(int position);
     }
@@ -43,14 +44,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         }
     }
 
-    public ArticleAdapter(List<ArticleInterface> articles) {
-        list = articles;
+    public ArticleAdapter(Context context) {
+        this.context = context;
     }
-
-    public List<ArticleInterface> getList() {
-        return list;
-    }
-
 
     @NonNull
     @Override
@@ -62,17 +58,23 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ArticleInterface article = list.get(position);
+        AndroidArticleDecorator article = (AndroidArticleDecorator) MainActivity.articleList.get(position);
         holder.title.setText(article.getTitle());
+
+        if(article.isRead())
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.colorRead));
+        else
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.colorUnread));
+
         holder.excerpt.setText(article.getDescription());
         holder.source.setText(article.getSource());
-        String imageUrl = ((ArticleImageDecorator) article).getImage();
+        String imageUrl = article.getImage();
         if(imageUrl != null)
             new DownloadImageTask(holder.image).execute(imageUrl);
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return MainActivity.articleList.size();
     }
 }

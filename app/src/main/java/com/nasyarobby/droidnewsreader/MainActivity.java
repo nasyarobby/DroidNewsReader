@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, ARTICLES_LOADED_TEXT, LENGTH_SHORT).show();
                 List<ArticleInterface> newArticles = source.getArticles();
                 if (newArticles.size() > 0) {
-                    articlesAdapter.getList().addAll(source.getArticles());
+                    articleList.addAll(source.getArticles());
                     articlesAdapter.notifyDataSetChanged();
                 }
             }
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         articleRecyclerView.setLayoutManager(layoutManager);
 
-        articlesAdapter = new ArticleAdapter(articleList);
+        articlesAdapter = new ArticleAdapter(getApplicationContext());
         ArticleSource newsapi = factory.getSource("All Headlines");
         articleRecyclerView.setAdapter(articlesAdapter);
         loadArticleSource(newsapi);
@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        articlesAdapter.notifyDataSetChanged();
     }
 
     @Override
